@@ -29,6 +29,7 @@ class MainController extends AbstractController {
 		]);
 		
 		$probe->disable();
+		$probe->close();
 		
 		return $response;
 	}
