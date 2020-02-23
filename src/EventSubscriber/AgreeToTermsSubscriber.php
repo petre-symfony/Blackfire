@@ -32,14 +32,18 @@ class AgreeToTermsSubscriber implements EventSubscriberInterface {
 		if (!$user instanceof User) {
 			return;
 		}
-
 		// in reality, you would hardcode the most recent "terms" date
 		// change so you can see if the user needs to "re-agree". I've
 		// set it dynamically to 1 year ago to avoid anyone hitting
 		// this - as it's just example code...
 		//$latestTermsDate = new \DateTimeImmutable('2019-10-15');
 		$latestTermsDate = new \DateTimeImmutable('-1 year');
-
+		
+		// user is up-to-date!
+		if ($user->getAgreedToTermsAt() >= $latestTermsDate) {
+			return;
+		}
+		
 		$form = $this->formFactory->create(AgreeToUpdatedTermsFormType::class);
 
 		$html = $this->twig->render('main/agreeUpdatedTerms.html.twig', [
@@ -50,11 +54,6 @@ class AgreeToTermsSubscriber implements EventSubscriberInterface {
 		// "exit" this function before rendering the template if
 		// we know the user doesn't need to see the form!
 		$this->entrypointLookup->reset();
-
-		// user is up-to-date!
-		if ($user->getAgreedToTermsAt() >= $latestTermsDate) {
-			return;
-		}
 
 		$response = new Response($html);
 		$event->setResponse($response);
