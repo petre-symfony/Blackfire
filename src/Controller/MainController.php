@@ -19,11 +19,18 @@ class MainController extends AbstractController {
 	 * @Route("/", name="app_homepage")
 	 */
 	public function homepage(BigFootSightingRepository $bigFootSightingRepository) {
+		$probe = \BlackfireProbe::getMainInstance();
+		$probe->enable();
+		
 		$sightings = $this->createSightingsPaginator(1, $bigFootSightingRepository);
 
-		return $this->render('main/homepage.html.twig', [
+		$response = $this->render('main/homepage.html.twig', [
 			'sightings' => $sightings
 		]);
+		
+		$probe->disable();
+		
+		return $response;
 	}
 
 	/**
