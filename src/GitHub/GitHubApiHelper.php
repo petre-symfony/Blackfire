@@ -6,12 +6,18 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 class GitHubApiHelper {
 	private $httpClient;
+	
+	private $githubOrganizations = [];
 
 	public function __construct(HttpClientInterface $httpClient) {
 		$this->httpClient = $httpClient;
 	}
 
 	public function getOrganizationInfo(string $organization): GitHubOrganization {
+		if(isset($this->githubOrganizations[$organization])){
+			return $this->githubOrganizations[$organization];
+		}
+		
 		$response = $this->httpClient->request('GET', 'https://api.github.com/orgs/'.$organization);
 
 		$data = $response->toArray();
@@ -31,14 +37,26 @@ class GitHubApiHelper {
 	  $data = $response->toArray();
 
 	  $repositories = [];
+	  $publicRepoCount = 0;
+	  
 	  foreach ($data as $repoData) {
 	  	$repositories[] = new GitHubRepository(
 			  $repoData['name'],
 			  $repoData['html_url'],
 			  \DateTimeImmutable::createFromFormat('Y-m-d\TH:i:s\Z', $repoData['updated_at'])
 		  );
+	  	
+	  	if($repoData['private'] === false){
+	  		++$publicRepoCount;
+			}
 	  }
 
+	  if(!isset($this->githubOrganizations[$organization])){
+	  	$this->githubOrganizations[$organization] = new GitHubOrganization(
+	  		$data[0]['owner']['login'],
+				$publicRepoCount
+			);
+		}
 	  return $repositories;
   }
 }
