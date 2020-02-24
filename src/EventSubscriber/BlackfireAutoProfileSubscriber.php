@@ -36,7 +36,7 @@ class BlackfireAutoProfileSubscriber implements EventSubscriberInterface {
 
 	public static function getSubscribedEvents() {
 		return [
-			RequestEvent::class => 'onRequestEvent',
+			RequestEvent::class => ['onRequestEvent', 1000],
 			TerminateEvent::class => 'onTerminateEvent'
 		];
 	}
