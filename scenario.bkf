@@ -10,7 +10,7 @@ scenario
         name "Homepage"
         expect status_code() == 200
         expect css("tbody.js-sightings-list tr").count() > 10
-        assert metrics.sql.queries.count < 30
+        assert metrics.sql.queries.count < 1
 
     click link("Log In")
         name "Login page"
