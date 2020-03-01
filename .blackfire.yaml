@@ -3,6 +3,11 @@ tests:
     path: "/.*"
     assertions:
       - "metrics.http.requests.count <= 1"
+  "Pages are not suddenly much slower":
+    path: "/.*"
+    assertions:
+      - "percent(main.wall_time) < 30%"
+      #- "diff(metrics.sql.queries.count) < 2"
 
 scenarios: |
   #!blackfire-player
