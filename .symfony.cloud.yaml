@@ -8,6 +8,7 @@ runtime:
         - mbstring
         - ctype
         - iconv
+        - blackfire
         
 
 build:
