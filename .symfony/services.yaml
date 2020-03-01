@@ -1,0 +1,5 @@
+# .symfony/services.yaml
+mydatabase:
+  # mariadb
+  type: mysql:10.2
+  disk: 1024
